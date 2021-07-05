@@ -3,20 +3,40 @@ import {AppRegistry,TextInput, View, StyleSheet } from 'react-native';
 import { Title, IconButton } from 'react-native-paper';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
-import axios from 'axios';
-import Toast from 'react-native-toast-message';
+import axios from '../axios';
+//import Toast from 'react-native-toast-message';
 
-import {AuthContext} from '../navigation/AuthProvider';
+//import {AuthContext} from '../navigation/AuthProvider';
 
 
 export default function SignupScreen({ navigation }) {
 
-  const { register } = useContext(AuthContext);
+  //const { register } = useContext(AuthContext);
 
   const [mobileNumber, setMobileNumber] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [email,setEmail] = useState('');
+  
+  const registerUser = async (e) => {
+    e.preventDefault();
+    
+    await axios.post('/users/new',{
+
+      name : name,
+      email : email,
+      password : password,
+      mobileNumber : mobileNumber,
+    }).then((response) => {
+      navigation.navigate('Login')
+    })
+    setName("");
+    setPassword("");
+    setMobileNumber("");
+    setEmail("");
+
+    
+  };
 
 //   const nameRef = React.forwardRef();
 //   const emailRef = React.forwardRef(); 
@@ -57,36 +77,49 @@ export default function SignupScreen({ navigation }) {
       <FormInput
         labelName='Name'
         value={name}
+        type= "string"
+        onChangeText = {(e) => {
+          setName(e)
+        }}
         autoCapitalize='none'
-        onChangeText={userName => setName(userName)}
         //ref = {nameRef}
       />
       <FormInput
         labelName='Email'
         value={email}
+        type="string"
         autoCapitalize='none'
-        onChangeText={userEmail => setEmail(userEmail)}
+        onChangeText= {(e) => {
+          setEmail(e)
+        }}
         //ref = {emailRef}
       />
       <FormInput
         labelName='Password'
         value={password}
+        type="string"
         secureTextEntry={true}
-        onChangeText={userPassword => setPassword(userPassword)}
+        onChangeText={ (e) =>
+          setPassword(e)
+        }
         //ref = {passwordRef}
       />
       <FormInput
         labelName='Mobile Number'
         value={mobileNumber}
+        type = "string"
         keyboardType={'numeric'}
-        onChangeText={userMobileNumber => setMobileNumber(userMobileNumber)}
+        onChangeText = {(e) => {
+          setMobileNumber(e)
+        }}
         //ref = {mobileNumberRef}
       />
       <FormButton
         title='Signup'
         modeValue='contained'
         labelStyle={styles.loginButtonLabel}
-        onPress = {() => register(name, email, password, mobileNumber)}
+        onPress = {registerUser}
+        
       />
       <IconButton
         icon='keyboard-backspace'
