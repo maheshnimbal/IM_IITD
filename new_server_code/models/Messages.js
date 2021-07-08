@@ -16,10 +16,16 @@ const messageSchema = new mongoose.Schema({
   //   required: "Message is required!",
   // },
 
-  message : String,
-  name: String,
-  timestamp : String,
-  received : Boolean,
+  text: String,
+  user: { 
+    name: String,
+  },
+  createdAt: Date,
+  image: String,
+  video: String,
+  audio: String,
+  sent: Boolean,
+  received: Boolean
 });
 
 export default mongoose.model("messages", messageSchema);
