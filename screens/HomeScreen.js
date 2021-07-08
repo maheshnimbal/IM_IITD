@@ -1,22 +1,18 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Title } from 'react-native-paper';
 
-export default function HomeScreen() {
+import React from 'react';
+import PersonalGrp from './PersonalGrp';
+import Broadcast from './Broadcast';
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+
+
+const Tab = createMaterialTopTabNavigator();
+
+export default function Homescreen({ navigation }) {
   return (
-    <View style={styles.container}>
-      <Title>Home Screen</Title>
-      <Title>All chat rooms will be listed here</Title>
-      <FormButton modeValue='contained' title='Logout' />
-    </View>
+    <Tab.Navigator>
+      <Tab.Screen name="Broadcast" component={Broadcast} />
+      <Tab.Screen name="PersonalGrp" component={PersonalGrp} />
+    </Tab.Navigator>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#f5f5f5',
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-});

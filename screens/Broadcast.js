@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import { Container, Button, Footer, Header, Content, Card, CardItem, Text, Icon, Right, Thumbnail, Left, Body, ListItem, Link } from 'native-base';
 
 
-export default class Broadcast extends Component {
-  render() {
+export default function Broadcast ({navigation}){
     return (
       <Container>
         <Content style = {{ backgroundColor : "#FFEEDD"}} >
@@ -147,5 +146,4 @@ export default class Broadcast extends Component {
         </Content>
       </Container>
     );
-  }
 }
