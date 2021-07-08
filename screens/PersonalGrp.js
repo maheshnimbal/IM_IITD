@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 import { Container, Button, Footer, View, Header, Content, Card, CardItem, Text, Icon, Right, Thumbnail, Left, Body, ListItem } from 'native-base';
 import { useNavigation } from '@react-navigation/native';
+import ActionButton from 'react-native-action-button';
 
-export default class PersonalGrp extends Component {
-  render() {
-    const { navigation } = this.props;
+export default function PersonalGrp( {navigation} ){
     return (
       <Container>
         <Content style = {{ backgroundColor : "#FFEEDD"}}>
         <Card style = {{marginTop: 0, marginBottom: 0, borderColor: '#030014'}}>
-            <CardItem style = {{justifyContent : 'center'}} button onPress={() => navigation.navigate(<ChatScreenPers/>)}>
+            <CardItem style = {{justifyContent : 'center'}} button onPress={() => navigation.navigate('Messages')} >
             <Left style = {{flex : 1 }}>
               <Thumbnail source = {require('../i.png')}/>
             </Left>
@@ -89,7 +88,11 @@ export default class PersonalGrp extends Component {
            </Card>
            
         </Content>
+
+        <ActionButton buttonColor="rgba(231,76,60,1)" onPress={()=>navigation.navigate('CreateGroup')}>
+
+        </ActionButton>
       </Container>
+
     );
-  }
 }
