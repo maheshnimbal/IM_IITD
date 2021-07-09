@@ -5,6 +5,7 @@ import express from "express";
 import mongoose from "mongoose";
 import Users from "./models/User.js";
 import Messages from "./models/Messages.js"
+import Chatrooms from "./models/Chatroom.js"
 import Pusher from "pusher";
 import cors from "cors";
 
@@ -32,22 +33,41 @@ mongoose.connection.on("error", (err) => {
 mongoose.connection.once("open", () => {
     console.log("MongoDB Connected!");
     const msgCollection = mongoose.connection.collection("messages")
-    const changeStream = msgCollection.watch();
-    changeStream.on("change",(change) => {
-        console.log("A change had occured",change);
+    const chatroomCollection = mongoose.connection.collection("chatroom")
+
+    const changeStreammsg = msgCollection.watch();
+    const changeStreamcr = chatroomCollection.watch();
+    changeStreammsg.on("change",(change) => {
 
         if (change.operationType === 'insert'){
             const messageDetails = change.fullDocument;
             pusher.trigger('messages','inserted',{
-                message: messageDetails.message,
-                name: messageDetails.name,
-                timestamp: messageDetails.timestamp,
+                text: messageDetails.text,
+                user: messageDetails.user,
+                createdAt: messageDetails.createdAt,
+                chatroom: messageDetails.chatroom,
                 received: messageDetails.received
             });
         }
         else{
             console.log("Error triggering pusher");
         }
+    });
+
+        changeStreamcr.on("change",(change) => {
+
+            if (change.operationType === 'insert'){
+                const chatroomDetails = change.fullDocument;
+                pusher.trigger('messages','inserted',{
+                    name: chatroomDetails.name,
+                    description: chatroomDetails.description,
+                    icon: chatroomDetails.icon,
+                    isBroadcast: chatroomDetails.isBroadcast
+                });
+            }
+            else{
+                console.log("Error triggering pusher");
+            }
     });
     
 });
@@ -84,6 +104,29 @@ app.post('/messages/new',(req,res) => {
 
 app.get('/messages/sync', (req,res) => {
     Messages.find((err,data) => {
+        if (err){
+            res.status(500).send(err)
+        }
+        else{
+            res.status(200).send(data)
+        }
+    })
+})
+
+app.post('/chatrooms/new',(req,res) => {
+    const Chatroom = req.body;
+    Chatrooms.create(Chatroom,(err,data) => {
+        if (err){
+            res.status(500).send(err)
+        }
+        else{
+            res.status(201).send(data)
+        }
+    })
+})
+
+app.get('/chatrooms/sync', (req,res) => {
+    Chatrooms.find({isBroadcast: true},(err,data) => {
         if (err){
             res.status(500).send(err)
         }
