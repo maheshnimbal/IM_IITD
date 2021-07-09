@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useCallback} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View,Image, StatusBar, TouchableOpacity, StyleSheet } from 'react-native';
 
 import {Container, Text} from 'native-base';
@@ -7,13 +7,14 @@ import { GiftedChat, Bubble, Send, SendProps } from 'react-native-gifted-chat';
 import { IconButton } from 'react-native-paper';
 import Pusher from "pusher-js/react-native";
 import axios from "../axios";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-
-export default function MessagesPers() {
+export default function MessagesBrodcast({navigation, route}) {
 
     const [messages,setMessages] = useState([]);
-
+    const name = route.params.thread._id;
+    console.log(name);
     useEffect(() => {
       axios.get('/messages/sync')
         .then(response => {
@@ -36,22 +37,12 @@ export default function MessagesPers() {
       }
     },[messages]);
 
-    
-   async function handleSend(newMessage) {
-    setMessages(GiftedChat.append(newMessage,messages))
 
-    axios.post('/messages/new',{
-      text: newMessage[newMessage.length-1].text,
-      createdAt: new Date().getTime(),
-      user: {
-        _id: '1',
-        name: "Gaurav Jain"
-      },
-    });
+   
+    
+  function handleSend(newMessage = []) {
+     setMessages(GiftedChat.append(newMessage,messages));
     }
-
-
-    
     function renderBubble(props) {
       return (
         // Step 3: return the component
@@ -93,36 +84,23 @@ export default function MessagesPers() {
     
     return(
       <Container>
-         {/* <Header style = {appStyles.appTitle}>
-          <Left style = {{flex: 1, flexDirection : 'row', justifyContent: 'space-evenly', alignItems: 'center'}}>
-            <Thumbnail source = {require('./i.png')} style = {{ aspectRatio : 1.5,resizeMode : 'contain',  borderRadius: 150 / 2,overflow: "hidden"}}/>
-          </Left>
-  
-          <Body style = {{flex : 3, flexDirection : 'row', justifyContent: 'center', alignContent: 'center'}}>
-            <Title style={{color: '#EDFFEC'}}>Summer Trip 2021</Title>
-          </Body>
-  
-          <Right style = {{flex: 1, flexDirection : 'row'}}>
-  
-          <Button transparent >
-            <Icon name="search"/>
-          </Button>  
-  
-          </Right>
-                  
-        </Header>  */}
+         
         
        <GiftedChat
         messages={messages} 
         inverted={false}
-        onSend={newMessage => handleSend(newMessage)}
-        user={{_id: '1', name: 'Gaurav Jain' }}
+        //onSend={newMessage => handleSend(newMessage)}
+        user={{_id:1, name: 'Gaurav Jain' }}
         renderBubble={renderBubble}
-        placeholder='Type your message here...'
+        //placeholder='Type your message here...'
         showUserAvatar
-        alwaysShowSend
+        //alwaysShowSend
+        minComposerHeight={0}
+        maxComposerHeight={0}
+        minInputToolbarHeight={0}
+        renderInputToolbar={() => null}
         scrollToBottomComponent={scrollToBottomComponent}
-        renderSend={renderSend}
+        //renderSend={renderSend}
         />
       </Container>
       
@@ -139,21 +117,7 @@ export default function MessagesPers() {
   
   function LogoTitle() {
     return (
-      // <Header style = { {height:60, width: '100%', margin: 0, padding: 0, flex : 1,  backgroundColor: '#9792F3'}}>
-      //       <Left>
-      //         <Button transparent>
-      //           <Icon name='menu' />
-      //         </Button>
-      //       </Left>
-      //       <Body>
-      //         <Title style={{color: '#EDFFEC'}}>IM</Title>
-      //       </Body>
-      //       <Right>
-      //         <Button transparent >
-      //           <Icon name="search"/>
-      //         </Button>  
-      //       </Right>
-      // </Header>
+     
       <View styles={{fontWeight: 'bold'}}><Text styles={{fontWeight: 'bold', backgroundColor : "white"}}>IM</Text></View>
       
     );
