@@ -3,6 +3,7 @@ import { AppRegistry,TextInput, View, StyleSheet } from 'react-native';
 import { Title } from 'react-native-paper';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 //import { AuthContext } from '../navigation/AuthProvider';
 
 export default function LoginScreen({ navigation }) {
@@ -31,6 +32,7 @@ export default function LoginScreen({ navigation }) {
         modeValue='contained'
         labelStyle={styles.loginButtonLabel}
         // onPress={() => login(email, password)}
+        onPress={() => navigation.navigate('Home')}
       />
       <FormButton
         title='New user? Join here'

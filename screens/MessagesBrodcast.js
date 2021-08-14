@@ -13,10 +13,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function MessagesBrodcast({navigation, route}) {
 
     const [messages,setMessages] = useState([]);
-    const name = route.params.thread._id;
-    console.log(name);
+
+    const name = route.params.thread.name;
     useEffect(() => {
-      axios.get('/messages/sync')
+      axios.get('/messages/sync',{ params: { value: name } })
         .then(response => {
           setMessages(response.data);
         })
@@ -29,7 +29,9 @@ export default function MessagesBrodcast({navigation, route}) {
     
       const channel = pusher.subscribe('messages');
       channel.bind('inserted', (newMessage) => {
+        if(newMessage.chatroomName === name){
         setMessages([...messages,newMessage]);
+        }
       });
       return () => {
         channel.unbind_all();
@@ -84,7 +86,6 @@ export default function MessagesBrodcast({navigation, route}) {
     
     return(
       <Container>
-         
         
        <GiftedChat
         messages={messages} 
@@ -103,7 +104,7 @@ export default function MessagesBrodcast({navigation, route}) {
         //renderSend={renderSend}
         />
       </Container>
-      
+
       );
 }
   

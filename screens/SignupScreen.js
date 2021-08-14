@@ -4,6 +4,7 @@ import { Title, IconButton } from 'react-native-paper';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
 import axios from '../axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 //import Toast from 'react-native-toast-message';
 
 //import {AuthContext} from '../navigation/AuthProvider';
@@ -28,7 +29,8 @@ export default function SignupScreen({ navigation }) {
       password : password,
       mobileNumber : mobileNumber,
     }).then((response) => {
-      navigation.navigate('Login')
+      
+      navigation.navigate('Home');
     })
     setName("");
     setPassword("");

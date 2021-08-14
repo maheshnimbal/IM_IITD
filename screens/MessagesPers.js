@@ -28,7 +28,9 @@ export default function MessagesPers() {
     
       const channel = pusher.subscribe('messages');
       channel.bind('inserted', (newMessage) => {
-        setMessages([...messages,newMessage]);
+        if(newMessage._id != '1'){
+          setMessages([...messages,newMessage]);
+        }
       });
       return () => {
         channel.unbind_all();
@@ -39,7 +41,6 @@ export default function MessagesPers() {
     
    async function handleSend(newMessage) {
     setMessages(GiftedChat.append(newMessage,messages))
-
     axios.post('/messages/new',{
       text: newMessage[newMessage.length-1].text,
       createdAt: new Date().getTime(),
@@ -139,21 +140,7 @@ export default function MessagesPers() {
   
   function LogoTitle() {
     return (
-      // <Header style = { {height:60, width: '100%', margin: 0, padding: 0, flex : 1,  backgroundColor: '#9792F3'}}>
-      //       <Left>
-      //         <Button transparent>
-      //           <Icon name='menu' />
-      //         </Button>
-      //       </Left>
-      //       <Body>
-      //         <Title style={{color: '#EDFFEC'}}>IM</Title>
-      //       </Body>
-      //       <Right>
-      //         <Button transparent >
-      //           <Icon name="search"/>
-      //         </Button>  
-      //       </Right>
-      // </Header>
+      
       <View styles={{fontWeight: 'bold'}}><Text styles={{fontWeight: 'bold', backgroundColor : "white"}}>IM</Text></View>
       
     );
