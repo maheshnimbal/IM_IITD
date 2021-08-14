@@ -8,6 +8,7 @@ import Messages from "./models/Messages.js"
 import Chatrooms from "./models/Chatroom.js"
 import Pusher from "pusher";
 import cors from "cors";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -54,20 +55,20 @@ mongoose.connection.once("open", () => {
         }
     });
 
-        changeStreamcr.on("change",(change) => {
+    changeStreamcr.on("change",(change) => {
 
-            if (change.operationType === 'insert'){
-                const chatroomDetails = change.fullDocument;
-                pusher.trigger('messages','inserted',{
-                    name: chatroomDetails.name,
-                    description: chatroomDetails.description,
-                    icon: chatroomDetails.icon,
-                    isBroadcast: chatroomDetails.isBroadcast
-                });
-            }
-            else{
-                console.log("Error triggering pusher");
-            }
+        if (change.operationType === 'insert'){
+            const chatroomDetails = change.fullDocument;
+            pusher.trigger('chatroom','inserted',{
+                name: chatroomDetails.name,
+                description: chatroomDetails.description,
+                icon: chatroomDetails.icon,
+                isBroadcast: chatroomDetails.isBroadcast
+            });
+        }
+        else{
+            console.log("Error triggering pusher");
+        }
     });
     
 });
@@ -103,7 +104,9 @@ app.post('/messages/new',(req,res) => {
 })
 
 app.get('/messages/sync', (req,res) => {
-    Messages.find((err,data) => {
+    let name = req.query.value; 
+         
+    Messages.find({chatroomName: name},(err,data) => {
         if (err){
             res.status(500).send(err)
         }
@@ -127,6 +130,17 @@ app.post('/chatrooms/new',(req,res) => {
 
 app.get('/chatrooms/sync', (req,res) => {
     Chatrooms.find({isBroadcast: true},(err,data) => {
+        if (err){
+            res.status(500).send(err)
+        }
+        else{
+            res.status(200).send(data)
+        }
+    })
+})
+
+app.get('/personalchats/sync', (req,res) => {
+    Chatrooms.find({isBroadcast: false},(err,data) => {
         if (err){
             res.status(500).send(err)
         }
